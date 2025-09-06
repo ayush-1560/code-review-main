@@ -92,7 +92,7 @@ function App() {
       <header className="border-b bg-gradient-to-r from-indigo-700 via-purple-700 to-fuchsia-700 text-white shadow">
         <div className="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">AI Code Reviewer</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">CodeBuddy</h1>
             <p className="text-xs/6 opacity-90">Type code on the left, get a review on the right.</p>
           </div>
           <span />
