@@ -18,54 +18,36 @@ import toast from 'react-hot-toast'
 import './App.css'
 
 function App() {
-  // UI state: editable code input and AI review output
   const [ code, setCode ] = useState(`function sum(a, b) {\n  return a + b\n}`)
   const [ review, setReview ] = useState('')
   const [ language, setLanguage ] = useState('javascript')
   const [ isLoading, setIsLoading ] = useState(false)
   const [ error, setError ] = useState('')
-  // Removed dark mode toggle for simplicity
 
-  // Simple examples to help users get started quickly
+  // ✅ Load backend URL from environment
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
   const examples = [
-    {
-      label: 'JS: Sum function',
-      value: `function sum(a, b) {\n  return a + b\n}`,
-    },
-    {
-      label: 'JS: Factorial (loop)',
-      value: `function factorial(n) {\n  if (n < 0) return 0\n  let res = 1\n  for (let i = 2; i <= n; i++) res *= i\n  return res\n}`,
-    },
-    {
-      label: 'JS: Debounce helper',
-      value: `function debounce(fn, delay) {\n  let timer\n  return (...args) => {\n    clearTimeout(timer)\n    timer = setTimeout(() => fn(...args), delay)\n  }\n}`,
-    },
-    {
-      label: 'C++: Vector sum',
-      value: `#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n  vector<int> a = {1,2,3};\n  int s = accumulate(a.begin(), a.end(), 0);\n  cout << s;\n}`,
-    },
-    {
-      label: 'Java: Hello',
-      value: `public class Main {\n  public static void main(String[] args){\n    System.out.println("Hello");\n  }\n}`,
-    },
+    { label: 'JS: Sum function', value: `function sum(a, b) {\n  return a + b\n}` },
+    { label: 'JS: Factorial (loop)', value: `function factorial(n) {\n  if (n < 0) return 0\n  let res = 1\n  for (let i = 2; i <= n; i++) res *= i\n  return res\n}` },
+    { label: 'JS: Debounce helper', value: `function debounce(fn, delay) {\n  let timer\n  return (...args) => {\n    clearTimeout(timer)\n    timer = setTimeout(() => fn(...args), delay)\n  }\n}` },
+    { label: 'C++: Vector sum', value: `#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n  vector<int> a = {1,2,3};\n  int s = accumulate(a.begin(), a.end(), 0);\n  cout << s;\n}` },
+    { label: 'Java: Hello', value: `public class Main {\n  public static void main(String[] args){\n    System.out.println("Hello");\n  }\n}` },
   ]
 
   useEffect(() => {
     prism.highlightAll()
   }, [])
 
-  // Dark mode removed
-
-
-  // Calls backend API to review the code
+  // ✅ Calls backend API to review the code
   async function reviewCode() {
     try {
       setIsLoading(true)
       setError('')
-      const response = await axios.post('http://localhost:3000/ai/get-review', { code, language })
+      const response = await axios.post(`${backendUrl}/ai/get-review`, { code, language })
       setReview(response.data)
     } catch (e) {
-      setError('Failed to fetch review. Is the backend running on http://localhost:3000?')
+      setError(`Failed to fetch review. Is the backend running on ${backendUrl}?`)
     } finally {
       setIsLoading(false)
     }
@@ -81,14 +63,12 @@ function App() {
       await navigator.clipboard.writeText(text)
       toast.success('Copied to clipboard')
     } catch (_) {
-      // no-op: clipboard may be blocked by browser permissions
       toast.error('Copy failed')
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 text-gray-100 font-['Inter']">
-      {/* Header explains the app purpose at a glance */}
       <header className="border-b bg-gradient-to-r from-indigo-700 via-purple-700 to-fuchsia-700 text-white shadow">
         <div className="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
           <div>
@@ -99,9 +79,7 @@ function App() {
         </div>
       </header>
 
-      {/* Two-column layout: Editor and Review panel */}
       <main className="mx-auto grid max-w-7xl grid-cols-1 gap-4 p-4 md:grid-cols-2 h-[calc(100vh-96px)] overflow-hidden">
-        {/* Header row spanning both columns for perfect alignment */}
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-sm font-medium text-gray-300">Your Code</h2>
           <div className="flex flex-wrap items-center gap-2">
@@ -207,7 +185,5 @@ function App() {
     </div>
   )
 }
-
-
 
 export default App
